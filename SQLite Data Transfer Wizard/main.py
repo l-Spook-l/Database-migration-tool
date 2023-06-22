@@ -1,5 +1,5 @@
-# Перенос нужных таблиц из одно БД в другую SQLIte
 import sqlite3
+from config import PATH_TO_DATABASE
 
 
 def data_transfer():
@@ -9,8 +9,7 @@ def data_transfer():
         source_cursor = source_conn.cursor()
 
         # Открываем подключение к целевой базе данных
-        target_conn = sqlite3.connect(
-            'C:\Disk_D\Python_project\Django\Django_React_Golf_store\server\golf_home\db.sqlite3')
+        target_conn = sqlite3.connect(PATH_TO_DATABASE)
         target_cursor = target_conn.cursor()
         print("DataBase connect")
         try:

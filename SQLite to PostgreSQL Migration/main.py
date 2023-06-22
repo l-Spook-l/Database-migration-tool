@@ -57,27 +57,23 @@ try:
                 cursor.execute(
                     f"SELECT column_name, data_type FROM information_schema.columns  WHERE table_name = '{table_name}'")
                 results = cursor.fetchall()
-                # print('results', results)
-                # [print('boolean') for res in results if res[1] == 'boolean']
 
                 for row in data_rows:
                     row = list(row)
-                    # print('row', row)
 
                     for index, res in enumerate(results):
-                        if res[1] == 'boolean':  # Проверка типа столбца на "boolean"
-                            row[index] = str(row[index])  # Преобразование значения в строку
+                        # Проверка типа столбца на "boolean"
+                        if res[1] == 'boolean':
+                            # Преобразование значения в строку
+                            row[index] = str(row[index])
 
-                    # print('row str', row)
-
-                    # print('columns', columns)
-                    # print('results', results)
-                    # print('.join(columns)', ', '.join(columns))
-                    # print('.join(results[1])', ', '.join(results[1]))
                     print(
                         f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({'%s, ' * (len(columns) - 1) + '%s'})",
                         row)
+
+                    # Формируем SQL-запрос для вставки данных в таблицу БД
                     query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({'%s, ' * (len(columns) - 1) + '%s'})"
+                    # Выполняем запрос к БД с нужными параметрами
                     cursor.execute(query, row)
 
     finally:
@@ -87,32 +83,6 @@ try:
 
 
 except Exception as ex:
-    # в случае сбоя подключения будет выведено сообщение в STDOUT
+    # В случае сбоя подключения будет выведено сообщение
     print('Can`t establish connection to database')
     print(ex)
-
-# ------------------------------------------------------------------------------------------------------------------
-# Проблемы
-
-# в исходной базе есть зависимости одной таблицы к другой (one to many, many to many)
-# то сперва нодо достать все таблицы и сформировть список с корректным расположением таблиц (напр. users)
-# чтобы не возникало ошибок при добавлении
-# решение -
-# Запрос для получения списка таблиц
-# sqlite_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-# get_tables = [table[0] for table in sqlite_cursor.fetchall()]
-
-# так же у sqlite создается таблица - sqlite_sequence, которой в postgresql нету
-# решение -
-# Проверка
-# if table_name[0] == 'sqlite_sequence':
-#     continue
-
-# тип boolean в sqlite (0 или 1), а в postgresql (true, false или '0', '1') (есть еще варианты, но расмотрим только эти)
-# сперва нужно узнать тип столбца
-# your_table - ваша таблица
-# cursor.execute(f"SELECT column_name, data_type FROM information_schema.columns  WHERE table_name = 'your_table'")
-# results = cursor.fetchall()
-# print('results', results)
-# ------------------------------------------------------------------------------------------------------------------
-
