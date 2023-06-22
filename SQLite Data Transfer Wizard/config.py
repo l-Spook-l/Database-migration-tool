@@ -1,1 +1,1 @@
-PATH_TO_DATABASE = 'C:\Disk_D\Python_project\Django\Django_React_Golf_store\server\golf_home\db.sqlite3'
+PATH_TO_DATABASE = 'database path'

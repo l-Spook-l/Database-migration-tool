@@ -1,44 +1,40 @@
-## Задача
-- При разработке веб сайта golf store (ссылка), возникла необходимость перенести данные из одной БД SQLite в другую SQLite, так как в ходе разработки была изменена структура БД. 
-- Затем возникла необходимость переноса проекта на БД PostgreSLQ
+## Task
+- During the development of the golf store website (link), there was a need to migrate data from one SQLite database to another SQLite database due to changes in the database structure.
+- Then there was a need to migrate the project to a PostgreSQL database
 
+## Challenges in SQLite to PostgreSQL Migration
 
-
-## Проблемы в работе с переносом SQLite to PostgreSQL
-
-1. В исходной базе есть зависимости одной таблицы к другой (one to many, many to many).
-Сперва нодо достать все таблицы и сформировть список с корректным расположением таблиц (напр. users),
-чтобы не возникало ошибок при добавлении
-- Решение:
-  - Запрос для получения списка таблиц
+1. In the original database, there are dependencies between tables (one-to-many, many-to-many).
+- Solution:
+  - To retrieve all tables and create a list with the correct table order (e.g., users) to avoid errors during insertion:
       ```shell
       sqlite_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
       get_tables = [table[0] for table in sqlite_cursor.fetchall()]
 
-2. В sqlite создается таблица - sqlite_sequence, которой в postgresql нету
-- Решение:
-  - Надо сделать проверку
+2. SQLite creates the 'sqlite_sequence' table, which does not exist in PostgreSQL.
+- Solution:
+  - Perform a check:
       ```shell
       if table_name[0] == 'sqlite_sequence':
           continue
 
-3. Тип boolean в sqlite (0 или 1), а в postgresql (true, false или '0', '1') (есть еще варианты, но расмотрим только эти)
-- Решение
-  - Сперва нужно узнать тип столбца
+3. The boolean type in SQLite is represented as 0 or 1, while in PostgreSQL it is represented as true, false, or '0', '1' (there are other variations, but let's consider these).
+- Solution
+  - First, determine the column type:
      ```shell
-     # your_table - ваша таблица
+     # your_table - your table
      cursor.execute(f"SELECT column_name, data_type FROM information_schema.columns  WHERE table_name = 'your_table'")
      results = cursor.fetchall()
     
-  - Затем при переборе столбцов
+  - Then, when iterating over rows:
      ```shell
      for row in data_rows:
          row = list(row)
     
-  - Делать проверку
+  - Perform the type check:
     ```shell
      for index, res in enumerate(results):
-         # Проверка типа столбца на "boolean"
+         # Check if the column type is "boolean"
          if res[1] == 'boolean':  
-             # Преобразование значения в строку
+             # Convert the value to a string
              row[index] = str(row[index])  

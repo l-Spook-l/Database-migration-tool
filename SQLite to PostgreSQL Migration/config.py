@@ -1,5 +1,5 @@
-host = "127.0.0.1"  # Адрес хоста
-user = "postgres"  # Имя пользователя
-password = "123456"  # Пароль
-db_name = "golf store"  # Название БАЗЫ ДЫННЫХ
+host = "127.0.0.1"
+user = "postgres"
+password = "123456"
+db_name = "golf store"
 port = "5433"
